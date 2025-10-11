@@ -29,6 +29,4 @@
 
 
 
-
-
-esp_err_t event_system_adapter_init(esp_event_loop_handle_t main_loop,esp_event_loop_handle_t exception_loop,esp_event_handler_t s_main_loop_handler,esp_event_handler_t s_exception_loop_handler);
+esp_err_t event_system_adapter_init(esp_event_handler_t s_main_loop_handler,esp_event_handler_t s_exception_loop_handler);

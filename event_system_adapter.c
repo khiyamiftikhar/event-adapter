@@ -54,17 +54,33 @@ esp_err_t event_adapter_post_exception(esp_event_base_t base, int32_t id,
 }
 
 
-esp_err_t event_system_adapter_init(esp_event_loop_handle_t main_loop,
-                                    esp_event_loop_handle_t exception_loop,
-                                    esp_event_handler_t main_loop_handler,
+esp_err_t event_system_adapter_init(esp_event_handler_t main_loop_handler,
                                     esp_event_handler_t exception_loop_handler){
 
+    esp_event_loop_args_t routine_args = {
+        .queue_size = 16,
+        .task_name = "routine_loop",
+        .task_priority = 5,
+        .task_stack_size = 4096,
+        .task_core_id = tskNO_AFFINITY
+    };
+    esp_event_loop_args_t exc_args = {
+        .queue_size = 8,
+        .task_name = "exception_loop",
+        .task_priority = 4,
+        .task_stack_size = 3072,
+        .task_core_id = tskNO_AFFINITY
+    };
 
-    if(main_loop==NULL || exception_loop==NULL || main_loop_handler==NULL || exception_loop_handler==NULL)
-            return ESP_FAIL;
+    ESP_ERROR_CHECK(esp_event_loop_create(&routine_args, &s_routine_loop));
+    ESP_ERROR_CHECK(esp_event_loop_create(&exc_args, &s_exception_loop));
 
-    s_routine_loop=main_loop;
-    s_exception_loop=exception_loop;
+
+    //if(main_loop==NULL || exception_loop==NULL || main_loop_handler==NULL || exception_loop_handler==NULL)
+      //      return ESP_FAIL;
+
+    //s_routine_loop=main_loop;
+    //s_exception_loop=exception_loop;
     s_routine_handler=main_loop_handler;
     s_exception_handler=exception_loop_handler;
 

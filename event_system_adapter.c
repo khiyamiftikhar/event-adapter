@@ -12,25 +12,25 @@ static esp_event_handler_t s_exception_handler=NULL;
 
 
 // Register a component’s event base+id with the routine loop
-esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id)
+esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,void* handler_args)
 {
     if (!s_routine_loop || !s_routine_handler)
         return ESP_ERR_INVALID_STATE;
 
     return esp_event_handler_instance_register_with(
-        s_routine_loop, base, id, s_routine_handler, NULL, NULL);
+        s_routine_loop, base, id, s_routine_handler, handler_args, NULL);
 }
 
 
 
 // Register a component’s event base+id with the routine loop
-esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id)
+esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,void* handler_args)
 {
     if (!s_routine_loop || !s_routine_handler)
         return ESP_ERR_INVALID_STATE;
 
     return esp_event_handler_instance_register_with(
-        s_routine_loop, base, id, s_routine_handler, NULL, NULL);
+        s_routine_loop, base, id, s_routine_handler, handler_args, NULL);
 }
 
 // Post an event to the routine loop
@@ -74,6 +74,7 @@ esp_err_t event_system_adapter_init(esp_event_handler_t main_loop_handler,
 
     ESP_ERROR_CHECK(esp_event_loop_create(&routine_args, &s_routine_loop));
     ESP_ERROR_CHECK(esp_event_loop_create(&exc_args, &s_exception_loop));
+ 
 
 
     //if(main_loop==NULL || exception_loop==NULL || main_loop_handler==NULL || exception_loop_handler==NULL)

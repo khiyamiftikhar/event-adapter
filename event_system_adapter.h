@@ -37,8 +37,14 @@ esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,
 esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,
                                            void *handler_args);
 
+//To be used in the header file of the user source
+#define DECLARE_EVENT_ADAPTER(prefix)                                            \
+    /* Define both event bases */                                               \
+    EVENT_ADAPTER_DECLARE_BASE(prefix##_ROUTINE_EVENT_BASE);                         \
+    EVENT_ADAPTER_DECLARE_BASE(prefix##_EXCEPTION_EVENT_BASE);                       \
 
 
+//To be used in the source file of the user source
 #define DEFINE_EVENT_ADAPTER(prefix)                                            \
     /* Define both event bases */                                               \
     EVENT_ADAPTER_DEFINE_BASE(prefix##_ROUTINE_EVENT_BASE);                         \

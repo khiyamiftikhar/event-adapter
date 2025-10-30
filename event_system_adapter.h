@@ -36,6 +36,10 @@ esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,
 
 esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,
                                            void *handler_args);
+esp_err_t event_adapter_unregister_event(esp_event_base_t base, int32_t id);
+
+esp_err_t event_adapter_unregister_exception(esp_event_base_t base, int32_t id);
+
 
 //To be used in the header file of the user source
 #define DECLARE_EVENT_ADAPTER(prefix)                                            \
@@ -66,7 +70,16 @@ esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,
                                                                                 \
     static inline esp_err_t prefix##_register_exception(int32_t id,void* handler_args) {           \
         return event_adapter_register_exception(prefix##_EXCEPTION_EVENT_BASE, id, handler_args); \
+    }                                                                           \
+                                                                                \
+    static inline esp_err_t prefix##_unregister_event(int32_t id) {               \
+        return event_adapter_unregister_event(prefix##_ROUTINE_EVENT_BASE, id);   \
+    }                                                                           \
+                                                                                \
+    static inline esp_err_t prefix##_unregister_exception(int32_t id) {           \
+        return event_adapter_unregister_exception(prefix##_EXCEPTION_EVENT_BASE, id); \
     }
+
 
 
 

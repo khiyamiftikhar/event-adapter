@@ -11,6 +11,41 @@ static esp_event_loop_handle_t s_exception_loop=NULL;
 static esp_event_handler_t s_routine_handler=NULL;
 static esp_event_handler_t s_exception_handler=NULL;
 
+//These will be passed on reg as reference and then will  be required at unreg
+static esp_event_handler_instance_t s_routine_instance;
+static esp_event_handler_instance_t s_exception_instance;
+
+
+
+
+esp_err_t event_adapter_unregister_event(
+    esp_event_base_t base, int32_t id)
+{
+    if (!s_routine_loop || !s_routine_instance)
+        return ESP_ERR_INVALID_STATE;
+
+    return esp_event_handler_instance_unregister_with(
+        s_routine_loop,
+        base,
+        id,
+        s_routine_instance  // use the saved handle
+    );
+}
+
+esp_err_t event_adapter_unregister_exception(
+    esp_event_base_t base, int32_t id)
+{
+    if (!s_routine_loop || !s_routine_instance)
+        return ESP_ERR_INVALID_STATE;
+
+    return esp_event_handler_instance_unregister_with(
+        s_exception_loop,
+        base,
+        id,
+        s_exception_instance  // use the saved handle
+    );
+}
+
 
 // Register a component’s event base+id with the routine loop
 esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,void* handler_args)
@@ -19,7 +54,7 @@ esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,void* h
         return ESP_ERR_INVALID_STATE;
 
     return esp_event_handler_instance_register_with(
-        s_routine_loop, base, id, s_routine_handler, handler_args, NULL);
+        s_routine_loop, base, id, s_routine_handler, handler_args, &s_routine_instance);
 }
 
 
@@ -31,7 +66,7 @@ esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,voi
         return ESP_ERR_INVALID_STATE;
 
     return esp_event_handler_instance_register_with(
-        s_routine_loop, base, id, s_routine_handler, handler_args, NULL);
+        s_routine_loop, base, id, s_routine_handler, handler_args, &s_exception_instance);
 }
 
 // Post an event to the routine loop

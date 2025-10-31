@@ -72,19 +72,19 @@ esp_err_t event_adapter_unregister_exception(esp_event_base_t base, int32_t id,e
     }                                                                           \
                                                                                 \
     static inline esp_err_t prefix##_register_event(int32_t id,void* handler_args,event_adapter_handle_t* handle) {               \
-        return event_adapter_register_event(prefix##_ROUTINE_EVENT_BASE, id,handler_args,event_adapter_handle_t* handle);   \
+        return event_adapter_register_event(prefix##_ROUTINE_EVENT_BASE, id,handler_args,handle);   \
     }                                                                           \
                                                                                 \
     static inline esp_err_t prefix##_register_exception(int32_t id,void* handler_args,event_adapter_handle_t* handle) {           \
-        return event_adapter_register_exception(prefix##_EXCEPTION_EVENT_BASE, id, handler_args,event_adapter_handle_t* handle); \
+        return event_adapter_register_exception(prefix##_EXCEPTION_EVENT_BASE, id, handler_args,handle); \
     }                                                                           \
                                                                                 \
     static inline esp_err_t prefix##_unregister_event(int32_t id,event_adapter_handle_t* handle) {               \
-        return event_adapter_unregister_event(prefix##_ROUTINE_EVENT_BASE, id,event_adapter_handle_t* handle);   \
+        return event_adapter_unregister_event(prefix##_ROUTINE_EVENT_BASE, id,handle);   \
     }                                                                           \
                                                                                 \
     static inline esp_err_t prefix##_unregister_exception(int32_t id,event_adapter_handle_t* handle) {           \
-        return event_adapter_unregister_exception(prefix##_EXCEPTION_EVENT_BASE, id,event_adapter_handle_t* handle); \
+        return event_adapter_unregister_exception(prefix##_EXCEPTION_EVENT_BASE, id,handle); \
     }
 
 

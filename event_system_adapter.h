@@ -22,7 +22,14 @@ typedef void (*esp_event_handler_t)(void* event_handler_arg,
                                     esp_event_base_t event_base,
                                     int32_t event_id,
                                     void* event_data); /**< function called when an event is posted to the queue */
-//typedef void*        esp_event_handler_instance_t; /**< context identifying an instance of a registered event handler */
+typedef void* esp_event_handler_instance_t; /**< context identifying an instance of a registered event handler */
+
+
+
+//User keeps and passes it during reg and unreg
+typedef struct {
+    esp_event_handler_instance_t instance;
+} event_adapter_handle_t;
 
 
 esp_err_t event_adapter_post_event(esp_event_base_t base, int32_t id,
@@ -32,13 +39,13 @@ esp_err_t event_adapter_post_exception(esp_event_base_t base, int32_t id,
                                        const void *data, size_t len);
 
 esp_err_t event_adapter_register_event(esp_event_base_t base, int32_t id,
-                                       void *handler_args);
+                                       void *handler_args,event_adapter_handle_t* handle);
 
 esp_err_t event_adapter_register_exception(esp_event_base_t base, int32_t id,
-                                           void *handler_args);
-esp_err_t event_adapter_unregister_event(esp_event_base_t base, int32_t id);
+                                           void *handler_args,event_adapter_handle_t* handle);
+esp_err_t event_adapter_unregister_event(esp_event_base_t base, int32_t id,event_adapter_handle_t* handle);
 
-esp_err_t event_adapter_unregister_exception(esp_event_base_t base, int32_t id);
+esp_err_t event_adapter_unregister_exception(esp_event_base_t base, int32_t id,event_adapter_handle_t* handle);
 
 
 //To be used in the header file of the user source
@@ -64,20 +71,20 @@ esp_err_t event_adapter_unregister_exception(esp_event_base_t base, int32_t id);
         return event_adapter_post_exception(prefix##_EXCEPTION_EVENT_BASE, id, data, len); \
     }                                                                           \
                                                                                 \
-    static inline esp_err_t prefix##_register_event(int32_t id,void* handler_args) {               \
-        return event_adapter_register_event(prefix##_ROUTINE_EVENT_BASE, id,handler_args);   \
+    static inline esp_err_t prefix##_register_event(int32_t id,void* handler_args,event_adapter_handle_t* handle) {               \
+        return event_adapter_register_event(prefix##_ROUTINE_EVENT_BASE, id,handler_args,event_adapter_handle_t* handle);   \
     }                                                                           \
                                                                                 \
-    static inline esp_err_t prefix##_register_exception(int32_t id,void* handler_args) {           \
-        return event_adapter_register_exception(prefix##_EXCEPTION_EVENT_BASE, id, handler_args); \
+    static inline esp_err_t prefix##_register_exception(int32_t id,void* handler_args,event_adapter_handle_t* handle) {           \
+        return event_adapter_register_exception(prefix##_EXCEPTION_EVENT_BASE, id, handler_args,event_adapter_handle_t* handle); \
     }                                                                           \
                                                                                 \
-    static inline esp_err_t prefix##_unregister_event(int32_t id) {               \
-        return event_adapter_unregister_event(prefix##_ROUTINE_EVENT_BASE, id);   \
+    static inline esp_err_t prefix##_unregister_event(int32_t id,event_adapter_handle_t* handle) {               \
+        return event_adapter_unregister_event(prefix##_ROUTINE_EVENT_BASE, id,event_adapter_handle_t* handle);   \
     }                                                                           \
                                                                                 \
-    static inline esp_err_t prefix##_unregister_exception(int32_t id) {           \
-        return event_adapter_unregister_exception(prefix##_EXCEPTION_EVENT_BASE, id); \
+    static inline esp_err_t prefix##_unregister_exception(int32_t id,event_adapter_handle_t* handle) {           \
+        return event_adapter_unregister_exception(prefix##_EXCEPTION_EVENT_BASE, id,event_adapter_handle_t* handle); \
     }
 
 
